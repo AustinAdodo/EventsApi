@@ -47,5 +47,10 @@ namespace EventsApi.Repositories
                 throw;
             }
         }
+
+        List<Event> IEvents_Services.CheckStatus(int Eventid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

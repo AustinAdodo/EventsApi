@@ -10,6 +10,8 @@ namespace EventsApi.Services
 
         public bool DeclineInvitation(int Eventid);
 
+        public List<Event> CheckStatus(int Eventid);
+
         public Task<bool> SendInvite(Mail request);
     }
 }

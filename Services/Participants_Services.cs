@@ -2,7 +2,7 @@
 
 namespace EventsApi.Services
 {
-    public interface Participants_Services
+    public interface IParticipants_Services
     {
         public bool GetStatus(int Eventid, string participantId);
         public bool ChangeStatus(int Eventid, string participantId);
