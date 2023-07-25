@@ -19,13 +19,13 @@ namespace EventsApi.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Accept([FromQuery] string Eventid, [FromBody] int ParticipantId)
+        [HttpPost("/accept")]
+        public async Task<IActionResult> Accept([FromQuery] string Eventid, [FromQuery] int ParticipantId)
         {
             try
             {
-                _eventService.AcceptInvitation(Eventid, ParticipantId);
-                return Ok("Succeesfull booked");
+                await _eventService.AcceptInvitation(Eventid, ParticipantId);
+                return Ok("Successfully booked");
             }
             catch (Exception ex)
             {

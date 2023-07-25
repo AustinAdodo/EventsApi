@@ -11,14 +11,15 @@ namespace EventsApi.Repositories
     public class Events_Repository : IEvents_Services
     {
         private readonly AppDbContext _context;
-        public bool AcceptInvitation(string Eventid, int participantId)
+        public async Task<bool> AcceptInvitation(string Eventid, int participantId)
         {
             //get participant details then add the even if the event id doesnt exist yet.
             try
             {
-                var person = _context.Participants.Where(a => a.id == participantId).First();
-                if (person.BookedEvents.Contains(Eventid)) return false;
-                person.BookedEvents.Add(Eventid); return true;
+                var person = await _context.Participants.FindAsync(participantId);
+                if (person!=null && person.BookedEvents.Contains(Eventid)) return false;
+                person?.BookedEvents.Add(Eventid); 
+                return true;
             }
             catch (Exception)
             {
