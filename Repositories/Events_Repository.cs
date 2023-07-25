@@ -65,9 +65,13 @@ namespace EventsApi.Repositories
             }
         }
 
-        public bool DeclineInvitation(int Eventid)
+        public bool DeclineInvitation(int Eventid, CancellationToken token)
         {
-            return true;
+            if (!token.IsCancellationRequested)
+            {
+                return true;
+            }
+            return false;
         }
 
         List<Event> IEvents_Services.CheckStatus(int Eventid)

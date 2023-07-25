@@ -9,7 +9,7 @@ namespace EventsApi.Services
         public Task<List<Event>> GetAll(int pageNumber, CancellationToken Token);
         public Task<bool> AcceptInvitation(string Eventid, int participantId);
 
-        public bool DeclineInvitation(int Eventid);
+        public bool DeclineInvitation(int Eventid, CancellationToken token);
 
         public List<Event> CheckStatus(int Eventid);
 
