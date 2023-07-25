@@ -23,16 +23,18 @@ namespace EventsApi.Repositories
             _memoryCache = memoryCache;
         }
 
+        //retrieve all establlished Events.
         public async Task<List<Event>> GetAll(int pageNumber, CancellationToken Token)
         {
             int pageSize = Preferences.PageSize;
+            string keyIdentifier = $"{pageNumber}Ev";
             try
             {
-                if (!_memoryCache.TryGetValue(pageNumber, out List<Event>? result))
+                if (!_memoryCache.TryGetValue(keyIdentifier, out List<Event>? result))
                 {
                     result = await _context.Events.OrderBy(a => a.EventId).Where(a => a.EventId > (pageNumber - 1) * pageSize)
                 .Take(pageSize).ToListAsync(Token);
-                    _memoryCache.Set(pageNumber, result, TimeSpan.FromMinutes(10));
+                    _memoryCache.Set(keyIdentifier, result, TimeSpan.FromMinutes(10));
                 }
                 return (result != null) ? result : new List<Event>();
             }
@@ -73,6 +75,7 @@ namespace EventsApi.Repositories
             throw new NotImplementedException();
         }
 
+        //send invite
         public async Task<bool> SendInvite(Mail request)
         {
             try

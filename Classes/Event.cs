@@ -3,7 +3,10 @@
     public class Event
     {
         //$"{DateTime.Now.ToString("HHmmss")}{this.CreatorName}";
- 
+        public Event()
+        {
+
+        }
         public int EventId { get; set; }
         public string EventName { get; set; }
         private int CreatorId { get; set; }
@@ -15,7 +18,10 @@
         public string EventType { get; set; } = "Personal";
 
         public string EventDescription { get; set; }
-        public DateTime Eventdate { get; set; }
+        public DateTime EventStartdate { get; set; }
+        public DateTime EventEnddate { get; set; }
+
+        public string TimeZone{ get; set; }
         public TimeOnly EventTime { get; set; }
     }
 }
