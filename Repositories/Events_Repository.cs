@@ -4,26 +4,26 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using EventsApi.Classes;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace EventsApi.Repositories
 {
     public class Events_Repository : IEvents_Services
     {
-        private readonly AppDbContext _context; 
-        public bool AcceptInvitation(string Eventid)
+        private readonly AppDbContext _context;
+        public bool AcceptInvitation(string Eventid, int participantId)
         {
-            //get list of events and add
+            //get participant details then add the even if the event id doesnt exist yet.
             try
             {
-
-                return true;
+                var person = _context.Participants.Where(a => a.id == participantId).First();
+                if (person.BookedEvents.Contains(Eventid)) return false;
+                person.BookedEvents.Add(Eventid); return true;
             }
             catch (Exception)
             {
-
-                throw;
+                return false;
             }
-
         }
 
         public bool DeclineInvitation(int Eventid)
