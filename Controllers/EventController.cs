@@ -19,13 +19,41 @@ namespace EventsApi.Controllers
             _eventService = eventService;
         }
 
+        //all
+        public async Task<IActionResult> All()
+        {
+            try
+            {
+                var result = await _eventService.GetAll();
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        //decline
+        public IActionResult Decline([FromQuery] string Eventid, [FromQuery] int ParticipantId)
+        {
+            try
+            {
+                return Ok($"Individual with Id {ParticipantId} has Declined invitation of event with id {Eventid}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
+        //accept
         [HttpPost("/accept")]
         public async Task<IActionResult> Accept([FromQuery] string Eventid, [FromQuery] int ParticipantId)
         {
             try
             {
                 await _eventService.AcceptInvitation(Eventid, ParticipantId);
-                return Ok("Successfully booked");
+                return Ok("Event Accepted");
             }
             catch (Exception ex)
             {
@@ -33,6 +61,7 @@ namespace EventsApi.Controllers
             }
         }
 
+        //sendinvite
         [HttpPost]
         public async Task<IActionResult> SendInvite([FromBody] string request)
         {

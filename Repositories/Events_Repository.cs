@@ -5,20 +5,54 @@ using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using EventsApi.Classes;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace EventsApi.Repositories
 {
     public class Events_Repository : IEvents_Services
     {
         private readonly AppDbContext _context;
+        private readonly IMemoryCache _memoryCache;
+
+        public Events_Repository(AppDbContext context, IMemoryCache memoryCache)
+        {
+            _context = context;
+            _memoryCache = memoryCache;
+        }
+
+        public async Task<List<Event>> GetAll()
+        {
+            string all = "AllEvents";
+            try
+            {
+                if (!_memoryCache.TryGetValue(all, out List<Event>? result))
+                {
+                    result = await _context.Events.ToListAsync();
+                    _memoryCache.Set(all, result, TimeSpan.FromMinutes(10));
+                }
+                return (result != null) ? result : new List<Event>();
+            }
+            catch (Exception)
+            {
+                return new List<Event>();
+            }
+        }
+
         public async Task<bool> AcceptInvitation(string Eventid, int participantId)
         {
             //get participant details then add the even if the event id doesnt exist yet.
             try
             {
-                var person = await _context.Participants.FindAsync(participantId);
-                if (person!=null && person.BookedEvents.Contains(Eventid)) return false;
-                person?.BookedEvents.Add(Eventid); 
+                if (!_memoryCache.TryGetValue(participantId, out Participant? cachedPerson))
+                {
+                    cachedPerson = await _context.Participants.FindAsync(participantId);
+                    // Cache the data for future requests
+                    _memoryCache.Set(participantId, cachedPerson, TimeSpan.FromMinutes(30));
+                    if (cachedPerson != null && cachedPerson.BookedEvents.Contains(Eventid)) return false;
+                    cachedPerson?.BookedEvents.Add(Eventid);
+                }
                 return true;
             }
             catch (Exception)
@@ -28,6 +62,11 @@ namespace EventsApi.Repositories
         }
 
         public bool DeclineInvitation(int Eventid)
+        {
+            return true;
+        }
+
+        List<Event> IEvents_Services.CheckStatus(int Eventid)
         {
             throw new NotImplementedException();
         }
@@ -61,9 +100,5 @@ namespace EventsApi.Repositories
             }
         }
 
-        List<Event> IEvents_Services.CheckStatus(int Eventid)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
