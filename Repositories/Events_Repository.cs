@@ -9,9 +9,21 @@ namespace EventsApi.Repositories
 {
     public class Events_Repository : IEvents_Services
     {
-        public bool AcceptInvitation(int Eventid)
+        private readonly AppDbContext _context; 
+        public bool AcceptInvitation(string Eventid)
         {
-            throw new NotImplementedException();
+            //get list of events and add
+            try
+            {
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         public bool DeclineInvitation(int Eventid)

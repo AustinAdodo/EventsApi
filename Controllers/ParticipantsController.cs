@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventsApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ParticipantsController : Controller
     {
         private readonly IParticipants_Services _participant_Services;

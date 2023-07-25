@@ -6,7 +6,7 @@ namespace EventsApi.Services
 {
     public interface IEvents_Services
     {
-        public bool AcceptInvitation(int Eventid);
+        public bool AcceptInvitation(string Eventid);
 
         public bool DeclineInvitation(int Eventid);
 
