@@ -20,11 +20,11 @@ namespace EventsApi.Controllers
         }
 
         //all
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All([FromQuery]int pageNumber,CancellationToken token)
         {
             try
             {
-                var result = await _eventService.GetAll();
+                var result = await _eventService.GetAll(pageNumber,token);
                 return Ok(result);
             }
             catch (Exception)

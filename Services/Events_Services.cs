@@ -6,7 +6,7 @@ namespace EventsApi.Services
 {
     public interface IEvents_Services
     {
-        public Task<List<Event>> GetAll();
+        public Task<List<Event>> GetAll(int pageNumber, CancellationToken Token);
         public Task<bool> AcceptInvitation(string Eventid, int participantId);
 
         public bool DeclineInvitation(int Eventid);

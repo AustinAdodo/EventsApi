@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using EventsApi.Settings;
 
 namespace EventsApi.Repositories
 {
@@ -22,15 +23,16 @@ namespace EventsApi.Repositories
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<Event>> GetAll()
+        public async Task<List<Event>> GetAll(int pageNumber, CancellationToken Token)
         {
-            string all = "AllEvents";
+            int pageSize = Preferences.PageSize;
             try
             {
-                if (!_memoryCache.TryGetValue(all, out List<Event>? result))
+                if (!_memoryCache.TryGetValue(pageNumber, out List<Event>? result))
                 {
-                    result = await _context.Events.ToListAsync();
-                    _memoryCache.Set(all, result, TimeSpan.FromMinutes(10));
+                    result = await _context.Events.OrderBy(a => a.EventId).Where(a => a.EventId > (pageNumber - 1) * pageSize)
+                .Take(pageSize).ToListAsync(Token);
+                    _memoryCache.Set(pageNumber, result, TimeSpan.FromMinutes(10));
                 }
                 return (result != null) ? result : new List<Event>();
             }
