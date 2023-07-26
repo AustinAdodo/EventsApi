@@ -20,7 +20,12 @@ namespace EventsApi.Repositories
             throw new NotImplementedException();
         }
 
-        public List<Participant> ListParticipants()
+        public List<Participant> ListParticipants(int Pagenumber , CancellationToken Token)
+        {
+            throw new NotImplementedException();
+        }
+
+        Participant IParticipants_Services.ListParticipants(string ParticipantId)
         {
             throw new NotImplementedException();
         }
