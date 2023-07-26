@@ -44,6 +44,7 @@ namespace EventsApi.Repositories
             }
         }
 
+        //Accept invite.
         public async Task<bool> AcceptInvitation(string Eventid, int participantId)
         {
             //get participant details then add the even if the event id doesnt exist yet.
