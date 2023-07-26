@@ -7,7 +7,7 @@ public class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var connctionString = builder.Configuration.GetConnectionString("EventsDBConnection");
+        string? connctionString = builder.Configuration.GetConnectionString("EventsDBConnection");
 
         builder.Services.AddControllers();
         builder.Services.AddMemoryCache();
