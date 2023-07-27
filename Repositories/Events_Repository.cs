@@ -4,11 +4,8 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using EventsApi.Classes;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using EventsApi.Settings;
+using Microsoft.Extensions.Logging;
 
 namespace EventsApi.Repositories
 {
@@ -16,11 +13,18 @@ namespace EventsApi.Repositories
     {
         private readonly AppDbContext _context;
         private readonly IMemoryCache _memoryCache;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<Events_Repository> _logger;
+        private readonly HttpContext _httpContext;
 
-        public Events_Repository(AppDbContext context, IMemoryCache memoryCache)
+        public Events_Repository(AppDbContext context, IMemoryCache memoryCache, 
+            UserManager<IdentityUser> userManager, HttpContext httpContext, ILogger<Events_Repository> logger)
         {
             _context = context;
             _memoryCache = memoryCache;
+            _userManager = userManager;
+            _httpContext = httpContext;
+            _logger = logger;
         }
 
         //retrieve all establlished Events.
@@ -83,14 +87,20 @@ namespace EventsApi.Repositories
         //send invite
         public async Task<bool> SendInvite(Mail request)
         {
+            var userIdClaim = _httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+               throw new Exception("Unauthorized to access resource.");
+            }
+            var userId = userIdClaim.Value;
             try
             {
-                string emailFrom = "YourEmailAddress";
-                string password = "YourEmailPassword";
-                string smtpServer = "YourSMTPServer";
+                string emailFrom = userIdClaim.ToString();
+                string password = "*****";
+                string smtpServer = "smtp.gmail.com";
                 int port = 587;
                 var message = new MailMessage(emailFrom, request.EmailTo);
-                message.Subject = "Your Subject";
+                message.Subject = Preferences.GeneralMailSubject;
                 message.Body = request.Content;
 
                 //SMTP client.
@@ -103,12 +113,11 @@ namespace EventsApi.Repositories
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return false;
-                throw;
             }
         }
-
     }
 }
