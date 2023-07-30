@@ -5,7 +5,6 @@ using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using EventsApi.Classes;
 using EventsApi.Settings;
-using Microsoft.Extensions.Logging;
 
 namespace EventsApi.Repositories
 {
@@ -38,7 +37,7 @@ namespace EventsApi.Repositories
                 {
                     result = await _context.Events.OrderBy(a => a.EventId).Where(a => a.EventId > (pageNumber - 1) * pageSize)
                 .Take(pageSize).ToListAsync(Token);
-                    _memoryCache.Set(keyIdentifier, result, TimeSpan.FromMinutes(10));
+                    _memoryCache.Set(keyIdentifier, result, TimeSpan.FromMinutes(3600));
                 }
                 return (result != null) ? result : new List<Event>();
             }
@@ -58,7 +57,7 @@ namespace EventsApi.Repositories
                 {
                     cachedPerson = await _context.Participants.FindAsync(participantId);
                     // Cache the data for future requests
-                    _memoryCache.Set(participantId, cachedPerson, TimeSpan.FromMinutes(30));
+                    _memoryCache.Set(participantId, cachedPerson, TimeSpan.FromMinutes(3600));
                     if (cachedPerson != null && cachedPerson.BookedEvents.Contains(Eventid)) return false;
                     cachedPerson?.BookedEvents.Add(Eventid);
                 }
@@ -100,7 +99,7 @@ namespace EventsApi.Repositories
                 string smtpServer = "smtp.gmail.com";
                 int port = 587;
                 var message = new MailMessage(emailFrom, request.EmailTo);
-                message.Subject = Preferences.GeneralMailSubject;
+                message.Subject = request.Subject;
                 message.Body = request.Content;
 
                 //SMTP client.

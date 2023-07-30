@@ -20,6 +20,7 @@ namespace EventsApi.Controllers
         }
 
         //all
+        [HttpGet()]
         public async Task<IActionResult> All([FromQuery]int pageNumber,CancellationToken token)
         {
             try
@@ -34,6 +35,7 @@ namespace EventsApi.Controllers
         }
 
         //decline
+        [HttpPost("/decline")]
         public IActionResult Decline([FromQuery] string Eventid, [FromQuery] int ParticipantId)
         {
             try
@@ -62,7 +64,7 @@ namespace EventsApi.Controllers
         }
 
         //sendinvite
-        [HttpPost]
+        [HttpPost("/send")]
         public async Task<IActionResult> SendInvite([FromBody] string request)
         {
             Mail? body = JsonSerializer.Deserialize<Mail>(request);
