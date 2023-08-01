@@ -81,6 +81,7 @@ namespace EventsApi.Repositories
         List<Event> IEvents_Services.CheckStatus(int Eventid)
         {
             throw new NotImplementedException();
+            //Testing Commit
         }
 
         //send invite
