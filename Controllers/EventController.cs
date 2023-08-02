@@ -70,7 +70,8 @@ namespace EventsApi.Controllers
             Mail? body = JsonSerializer.Deserialize<Mail>(request);
             try
             {
-                await _eventService.SendInvite(body); return Ok($"Email sent successfully to {body.EmailTo}");
+                await _eventService.SendInvite(body); 
+                return Ok($"Email sent successfully to {body.EmailTo}");
             }
             catch (Exception ex)
             {
