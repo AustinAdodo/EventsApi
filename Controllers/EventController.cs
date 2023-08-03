@@ -21,6 +21,7 @@ namespace EventsApi.Controllers
 
         //all
         [HttpGet()]
+        [ResponseCache(Duration = 60)]
         public async Task<IActionResult> All([FromQuery]int pageNumber,CancellationToken token)
         {
             try
@@ -78,5 +79,14 @@ namespace EventsApi.Controllers
                 return BadRequest($"Failed to send the email: {ex.Message}");
             }
         }
+
+        //// Prefer
+        //[HttpPost]
+        //public async Task<IActionResult> GenerateReport(Report report)
+        //{
+        //    var taskIdentifier = await _messageQueueService.EnqueueAsync(report);
+
+        //    return StatusCode(StatusCodes.Status202Accepted, taskIdentifier);
+        //}
     }
 }
