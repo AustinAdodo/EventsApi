@@ -4,6 +4,10 @@ using EventsApi.Services;
 
 public class Program
 {
+    /// <summary>
+    /// Local Connection String utilised
+    /// </summary>
+    /// <param name="args"></param>
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
